@@ -52,7 +52,19 @@ namespace CoreCourse.EFBasics.Web.Data
                 .HasOne(si => si.Student)          //... is associated with exactly 1 Student
                 .WithOne(s => s.ContactInfo)       //... which is in turn associated with 1 StudentInfo
                 .HasForeignKey<StudentInfo>(si => si.StudentId); //and StudentId is the FK in this relationship
-            
+
+            //Configure Course-Teacher relationship (redundant code, but demonstrate how to do this)
+
+            modelBuilder.Entity<Course>()          //entity Course ...
+                .HasOne(c => c.Lecturer)           //... can be associated with exactly 1 Teacher
+                .WithMany(t => t.Courses)          //... which can in turn be associated with many Courses
+                .IsRequired(false)                 //... the relationship is optional 
+                                                   //    (this call is unneed, optional = default)
+                .OnDelete(DeleteBehavior.ClientSetNull); //... will set Lecturer to null if Teacher is deleted 
+                                                         //    (this call is not needed,  because this is the 
+                                                         //     default behaviour for optional relationships)
+
+
             base.OnModelCreating(modelBuilder);
         }
     }
