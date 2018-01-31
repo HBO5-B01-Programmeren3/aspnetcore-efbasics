@@ -64,7 +64,6 @@ namespace CoreCourse.EFBasics.Web.Data
                                                          //    (this call is not needed,  because this is the 
                                                          //     default behaviour for optional relationships)
 
-
             base.OnModelCreating(modelBuilder);
         }
     }

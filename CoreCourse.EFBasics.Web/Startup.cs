@@ -32,6 +32,15 @@ namespace CoreCourse.EFBasics.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+
+                //create a scope with which to get the DbContext service (yuck!)
+                using (var serviceScope = app.ApplicationServices
+                                             .GetRequiredService<IServiceScopeFactory>()
+                                             .CreateScope())
+                {
+                    var context = serviceScope.ServiceProvider.GetService<SchoolContext>(); //get DbContext
+                    DataSeeder.Seed(context);
+                }
             }
             else
             {
