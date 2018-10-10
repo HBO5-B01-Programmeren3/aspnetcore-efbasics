@@ -1,116 +1,43 @@
-﻿using CoreCourse.EFBasics.Web.Data;
-using CoreCourse.EFBasics.Web.Entities;
-using CoreCourse.EFBasics.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using CoreCourse.EFBasics.Web.Models;
 
 namespace CoreCourse.EFBasics.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private SchoolContext schoolContext;
-
-        public HomeController(SchoolContext context)
+        public IActionResult Index()
         {
-            schoolContext = context;
+            return View();
         }
 
-
-        public async Task<IActionResult> Index()
+        public IActionResult About()
         {
-            IndexVm vm = new IndexVm(); //will be passed to Index View
+            ViewData["Message"] = "Your application description page.";
 
-            //1. get teacher with Id == 1 
-            vm.TeacherWidthIdOne = await schoolContext.Teachers.FindAsync(5L);
-
-            //2. get students born before 2000, ordered by Name
-            vm.StudentsBornBefore2k = await schoolContext.Students
-                .Where(s => s.Birthdate.Year < 2000)
-                .OrderBy(s => s.Name)
-                .ToListAsync();
-
-            //3. get total amount of scholarships
-            vm.TotalScholarships = await schoolContext.Students
-                .SumAsync(s => s.Scholarship) ?? 0; //return 0 if null
-
-            //4. get scholarship student with studentinfo loaded
-            //   order by scholarship, then by name
-            vm.ScholarshipStudentsWithInfo = await schoolContext.Students
-                .Include(s => s.ContactInfo)
-                .Where(s => s.Scholarship != null)
-                .OrderBy(s => s.Scholarship)
-                .ThenBy(s => s.Name)
-                .ToListAsync();
-
-            //5. get a full graph of all courses
-            //   order by the amount of student in course, descending
-            var allStudentCourses = await schoolContext.Set<StudentCourse>() //start in the join table
-                .Include(sc => sc.Course)
-                .ThenInclude(c => c.Lecturer)
-                .Include(sc => sc.Student)
-                .ThenInclude(s => s.ContactInfo)
-                .ToListAsync();
-
-            //operations beyond this point happen in memory, not in database 
-            vm.Courses = allStudentCourses
-                .Select(sc => sc.Course)                    //select by Course, once results are in
-                .Distinct()                                 //select each course only once
-                .OrderByDescending(sc => sc.StudentCourses.Count);    //order by number of StudentCourses
-
-            return View(vm);
+            return View();
         }
 
-        public async Task<IActionResult> StudentDetails(long id)
+        public IActionResult Contact()
         {
-            //try to get student
-            Student student = await schoolContext.Students.FindAsync(id);
+            ViewData["Message"] = "Your contact page.";
 
-            if (student != null)
-            {
-                return View(student);
-            }
-            else
-            {
-                return NotFound($"A student with id {id} was not found!");
-            }
+            return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteStudent(Student student)
+        public IActionResult Privacy()
         {
-            //try to get student by Id
-            Student studentToDelete = await schoolContext.Students.FindAsync(student.Id);
-
-            if (student != null)
-            {
-                schoolContext.Remove(studentToDelete);
-                await schoolContext.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return NotFound($"A student with id {student.Id} was not found!");
-            }
+            return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStudent(Student student)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            if (student != null)
-            {
-                schoolContext.Update(student);
-                await schoolContext.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return NotFound($"A student with id {student.Id} was not found!");
-            }
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
     }
 }
