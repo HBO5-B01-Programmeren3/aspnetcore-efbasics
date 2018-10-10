@@ -16,7 +16,6 @@ namespace CoreCourse.EFBasics.Web.Entities
         /// <summary>
         /// Navigation property to related Teacher
         /// </summary>
-        [Required]
         public Teacher Lecturer { get; set; }
 
         /// <summary>
