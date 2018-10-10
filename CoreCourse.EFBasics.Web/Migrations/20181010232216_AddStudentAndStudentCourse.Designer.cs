@@ -4,14 +4,16 @@ using CoreCourse.EFBasics.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreCourse.EFBasics.Web.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolContextModelSnapshot : ModelSnapshot
+    [Migration("20181010232216_AddStudentAndStudentCourse")]
+    partial class AddStudentAndStudentCourse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,29 +71,6 @@ namespace CoreCourse.EFBasics.Web.Migrations
                     b.ToTable("StudentCourses");
                 });
 
-            modelBuilder.Entity("CoreCourse.EFBasics.Web.Entities.StudentInfo", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(30);
-
-                    b.Property<long>("StudentId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentId")
-                        .IsUnique();
-
-                    b.ToTable("StudentInfo");
-                });
-
             modelBuilder.Entity("CoreCourse.EFBasics.Web.Entities.Teacher", b =>
                 {
                     b.Property<long>("Id")
@@ -127,14 +106,6 @@ namespace CoreCourse.EFBasics.Web.Migrations
                     b.HasOne("CoreCourse.EFBasics.Web.Entities.Student", "Student")
                         .WithMany("StudentCourses")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CoreCourse.EFBasics.Web.Entities.StudentInfo", b =>
-                {
-                    b.HasOne("CoreCourse.EFBasics.Web.Entities.Student", "Student")
-                        .WithOne("ContactInfo")
-                        .HasForeignKey("CoreCourse.EFBasics.Web.Entities.StudentInfo", "StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

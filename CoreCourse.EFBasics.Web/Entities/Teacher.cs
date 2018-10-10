@@ -16,6 +16,9 @@ namespace CoreCourse.EFBasics.Web.Entities
 
         public decimal? YearlyWage { get; set; }
 
+        /// <summary>
+        /// Navigation property to related Courses
+        /// </summary>
         public ICollection<Course> Courses { get; set; }
 
     }
