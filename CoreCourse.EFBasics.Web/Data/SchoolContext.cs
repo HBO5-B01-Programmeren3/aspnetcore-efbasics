@@ -63,7 +63,8 @@ namespace CoreCourse.EFBasics.Web.Data
                 .OnDelete(DeleteBehavior.ClientSetNull); //... will set Lecturer to null if Teacher is deleted 
                                                          //    (this call is not needed!  because this is the 
                                                          //     default behaviour for optional relationships)
-                                                         
+            DataSeeder.Seed(modelBuilder);          
+           
             base.OnModelCreating(modelBuilder);
         }
     }
