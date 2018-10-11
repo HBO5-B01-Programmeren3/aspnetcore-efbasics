@@ -49,7 +49,11 @@
                 @foreach (var studentcourse in course.StudentCourses
                    .OrderBy(sc => sc.Student.Name))
                 {
-                    <li><p>@studentcourse.Student.Name</p></li>
+                    <li>
+                        <p>@studentcourse.Student.Name
+                        [<a asp-action="StudentDetails" asp-route-id="@studentcourse.StudentId">Details</a>]
+                        </p>
+                    </li>
                 }
             </ul>
 

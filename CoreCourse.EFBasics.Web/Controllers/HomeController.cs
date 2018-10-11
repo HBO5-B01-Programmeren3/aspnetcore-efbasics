@@ -64,5 +64,56 @@ namespace CoreCourse.EFBasics.Web.Controllers
             return View(vm);
 
         }
+
+        public async Task<IActionResult> StudentDetails(long id)
+        {
+            //try to get student
+            Student student = await schoolContext.Students.FindAsync(id);
+
+            if (student != null)
+            {
+                return View(student);
+            }
+            else
+            {
+                return NotFound($"A student with id {id} was not found!");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStudent(Student student)
+        {
+            //try to get student by Id
+            Student studentToDelete = await schoolContext.Students.FindAsync(student.Id);
+
+            if (student != null)
+            {
+                schoolContext.Remove(studentToDelete);
+                await schoolContext.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return NotFound($"A student with id {student.Id} was not found!");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStudent(Student student)
+        {
+            if (student != null)
+            {
+                schoolContext.Update(student);
+                await schoolContext.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return NotFound($"A student with id {student.Id} was not found!");
+            }
+        }
+
     }
 }
